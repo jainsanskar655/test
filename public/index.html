@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamCollab | Collaboration Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/themes.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+            </div>
+            <div id="login" class="auth-form active">
+                <h2>Welcome Back!</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+            </div>
+            <div id="register" class="auth-form">
+                <h2>Create Account</h2>
+                <form id="register-form">
+                    <div class="input-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="register-confirm">Confirm Password</label>
+                        <input type="password" id="register-confirm" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1 class="logo">Team<span>Collab</span></h1>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="#" data-section="messages"><i class="fas fa-envelope"></i> Messages</a></li>
+                        <li><a href="#" data-section="poc-tracker"><i class="fas fa-clipboard-list"></i> POC Tracker</a></li>
+                        <li><a href="#" data-section="task-manager"><i class="fas fa-tasks"></i> My Tasks</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-switch">
+                        <span class="slider round"></span>
+                    </label>
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="user-profile">
+                    <img id="user-avatar" src="assets/default-avatar.png" alt="User">
+                    <div class="dropdown">
+                        <span id="username-display">User</span>
+                        <div class="dropdown-content">
+                            <a href="#" id="profile-link"><i class="fas fa-user"></i> Profile</a>
+                            <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <h2>Team Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="stats-card">
+                        <h3>Completed Tasks</h3>
+                        <p id="completed-tasks">0</p>
+                        <div class="progress-ring">
+                            <svg width="60" height="60">
+                                <circle class="progress-ring-circle" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                            </svg>
+                            <span class="progress-text">0%</span>
+                        </div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Active POCs</h3>
+                        <p id="active-pocs">0</p>
+                    </div>
+                    <div class="stats-card">
+                        <h3>Team Messages</h3>
+                        <p id="team-messages">0</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tasks-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="pocs-chart"></canvas>
+                    </div>
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <ul id="activity-list"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messages-section" class="content-section">
+                <div class="messages-container">
+                    <div class="conversations-list">
+                        <h3>Team Members</h3>
+                        <input type="text" id="search-users" placeholder="Search team members...">
+                        <ul id="users-list"></ul>
+                    </div>
+                    <div class="message-view">
+                        <div class="message-header">
+                            <h3 id="current-chat">Select a conversation</h3>
+                        </div>
+                        <div class="messages" id="messages-container"></div>
+                        <div class="message-input">
+                            <input type="text" id="message-input" placeholder="Type your message...">
+                            <button id="send-message" class="btn-primary"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- POC Tracker Section -->
+            <section id="poc-tracker-section" class="content-section">
+                <div class="section-header">
+                    <h2>POC Accounts</h2>
+                    <button id="add-poc-btn" class="btn-primary"><i class="fas fa-plus"></i> Add POC</button>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="daily">Daily View</button>
+                    <button class="view-btn" data-view="monthly">Monthly View</button>
+                </div>
+                <div id="poc-daily-view" class="poc-view active">
+                    <table class="poc-table">
+                        <thead>
+                            <tr>
+                                <th>POC Name</th>
+                                <th>Status</th>
+                                <th>Assigned To</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="poc-daily-table">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="poc-monthly-view" class="poc-view">
+                    <div class="month-selector">
+                        <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                        <h3 id="current-month">May 2023</h3>
+                        <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="monthly-grid" id="monthly-grid"></div>
+                </div>
+            </section>
+
+            <!-- Task Manager Section -->
+            <section id="task-manager-section" class="content-section">
+                <div class="section-header">
+                    <h2>My Tasks</h2>
+                    <button id="add-task-btn" class="btn-primary"><i class="fas fa-plus"></i> Add Task</button>
+                </div>
+                <div class="task-filters">
+                    <div class="filter-group">
+                        <label for="task-filter">Filter:</label>
+                        <select id="task-filter">
+                            <option value="all">All Tasks</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="high">High Priority</option>
+                            <option value="medium">Medium Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                    </div>
+                    <div class="sort-group">
+                        <label for="task-sort">Sort by:</label>
+                        <select id="task-sort">
+                            <option value="dueDate">Due Date</option>
+                            <option value="priority">Priority</option>
+                            <option value="created">Created Date</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="tasks-container">
+                    <div class="task-column">
+                        <h3>To Do</h3>
+                        <div class="task-list" id="todo-tasks" data-status="todo"></div>
+                    </div>
+                    <div class="task-column">
+                        <h3>In Progress</h3>
+                        <div class="task-list" id="progress-tasks" data-status="progress"></div>
+                    </div>
+                    <div class="task-column">
+                        <h3>Completed</h3>
+                        <div class="task-list" id="completed-tasks" data-status="completed"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modal for adding POC -->
+        <div id="poc-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Add New POC Account</h2>
+                <form id="poc-form">
+                    <div class="input-group">
+                        <label for="poc-name">POC Name</label>
+                        <input type="text" id="poc-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="poc-description">Description</label>
+                        <textarea id="poc-description" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="poc-assignee">Assign To</label>
+                        <select id="poc-assignee" required></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="poc-status">Status</label>
+                        <select id="poc-status" required>
+                            <option value="not-started">Not Started</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                            <option value="on-hold">On Hold</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="poc-due-date">Due Date</label>
+                        <input type="date" id="poc-due-date">
+                    </div>
+                    <button type="submit" class="btn-primary">Save POC</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for adding/editing task -->
+        <div id="task-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="task-modal-title">Add New Task</h2>
+                <form id="task-form">
+                    <input type="hidden" id="task-id">
+                    <div class="input-group">
+                        <label for="task-title">Title</label>
+                        <input type="text" id="task-title" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="task-description">Description</label>
+                        <textarea id="task-description" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="task-priority">Priority</label>
+                        <select id="task-priority" required>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="task-status">Status</label>
+                        <select id="task-status" required>
+                            <option value="todo">To Do</option>
+                            <option value="progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="task-due-date">Due Date</label>
+                        <input type="date" id="task-due-date">
+                    </div>
+                    <button type="submit" class="btn-primary">Save Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

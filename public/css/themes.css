@@ -1,0 +1,80 @@
+/* Light Theme (default) */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --border-color: #e9ecef;
+    --hover-color: #f8f9fa;
+    --active-color: rgba(67, 97, 238, 0.1);
+    --input-bg: #ffffff;
+    --modal-bg: #ffffff;
+    --nav-bg: #ffffff;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #f5f5f5;
+    --card-bg: #2d2d2d;
+    --border-color: #444444;
+    --hover-color: #3d3d3d;
+    --active-color: rgba(67, 97, 238, 0.3);
+    --input-bg: #2d2d2d;
+    --modal-bg: #2d2d2d;
+    --nav-bg: #1e1e1e;
+}
+
+/* Apply themes */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.app-header {
+    background-color: var(--nav-bg);
+}
+
+.stats-card,
+.chart-container,
+.recent-activity,
+.poc-table,
+.task-column,
+.modal-content {
+    background-color: var(--card-bg);
+}
+
+.main-nav a,
+.dropdown-content a {
+    color: var(--text-color);
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea,
+#search-users,
+#message-input,
+#task-filter,
+#task-sort {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.user-item:hover,
+.task-item {
+    background-color: var(--card-bg);
+}
+
+.user-item.active {
+    background-color: var(--active-color);
+}
+
+.task-list {
+    background-color: var(--hover-color);
+}
+
+.conversations-list,
+.message-header,
+.message-input {
+    border-color: var(--border-color);
+}
